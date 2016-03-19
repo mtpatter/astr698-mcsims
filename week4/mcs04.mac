@@ -1,0 +1,86 @@
+go
+	macro read mcs04.mac
+	#plot_all ngc3512 ngc3512fit1 1 25.768
+	#plot_all ngc3512 ngc3512fit2 2 22.721
+	#plot_all ngc3512 ngc3512fitall 3 16.132
+	#plot_all ngc3512 ngc3512fit3 4 18.664
+	#plot_all ngc3512 ngc3512fit9 5 27.836
+	#plot_all ngc3512 ngc3512fit6 6 26.747
+	#plot_all ngc3512 ngc3512fit8 7 27.029	
+	#plot_all ngc3512 ngc3512fit7 8 478.45
+	#plot_all ngc3512 ngc3512fit4 9 57.908
+	#plot_all ngc3512 ngc3512fit5 10 28.232
+	plot_noise ngc3512 ngc3512fit1
+
+plot_noise 2
+	#device postencap galnoise.ps
+        device x11 -bg white -fg black
+        expand 1.0001
+        define TeX_strings 1
+        era
+	data $2.dat
+	read {wstar 1 gal 2 gal2 3 gal4 4 gal6 5}
+	limits wstar gal6
+	box
+	ctype green
+	connect wstar gal6
+	ctype cyan
+	connect wstar gal4
+	ctype red
+	connect wstar gal2
+	ctype black
+	connect wstar gal
+	ctype black
+	xlabel wavelength (angstroms)
+	limits 0 1 0 1
+	relocate 0.7 0.4 label no noise
+	ctype red
+	relocate 0.7 0.35 label 2 noise
+	ctype cyan	
+	relocate 0.7 0.30 label 4 noise
+	ctype green
+	relocate 0.7 0.25 label 6 noise
+	ctype black
+	data $1.dat
+	read {wgal 1 galflux 2}
+	limits wstar gal6
+	#connect wgal galflux
+	xlabel wavelength (angstroms)
+	ylabel flux (normalized units)
+	
+plot_all 4
+	#device postencap gal$3.ps
+        device x11 -bg white -fg black
+        expand 1.0001
+        define TeX_strings 1
+        era
+        
+	window 1 2 1 2
+	data $1.dat
+	read {wgal 1 galflux 2}
+	limits wgal galflux
+	box
+	connect wgal galflux
+	xlabel wavelength (angstroms)
+	ylabel flux (normalized units)
+		
+	data $2.dat
+	read {wstar 1 stars 2}
+	ctype red
+	connect wstar stars
+	limits 0 1 0 1
+	relocate 0.8 0.85 label Fit
+	ctype black
+	relocate 0.8 0.75 label Actual
+
+	window 1 2 1 1
+	set del=galflux-stars
+	limits wstar del
+	box
+	connect wstar del
+	xlabel wavelength (angstroms)
+	ylabel \Delta flux (normalized units)
+	limits 0 1 0 1
+	relocate 0.4 0.9 label Residuals
+	relocate 0.7 0.05 label \chi^2 = $4
+	toplabel Table $3
